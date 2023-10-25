@@ -12,15 +12,19 @@ const requestListener = (request, response) => {
     }
  
     if(method === 'POST') {
-        response.end('<h1>Hola!</h1>');
-    }
- 
-    if(method === 'PUT') {
-        response.end('<h1>Bonjour!</h1>');
-    }
- 
-    if(method === 'DELETE') {
-        response.end('<h1>Moshi-moshi!</h1>');
+        let body = [];
+    
+        request.on('data', (chunk) => {
+            body.push(chunk);
+        });
+       
+        request.on('end', () => {
+            body = Buffer.concat(body).toString();
+
+            const { name } = JSON.parse(body);
+
+            response.end(`<h1>Hola, ${name}!</h1>`);
+        });
     }
 };
  
